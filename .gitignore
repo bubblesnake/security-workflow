@@ -1,0 +1,8 @@
+# Private security material
+*.pem
+*.bin
+*.hex
+
+# Python-generated files
+__pycache__/
+*.pyc
