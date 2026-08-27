@@ -83,7 +83,7 @@ python ~/esp/projects/security-workflow/secure_firmware.py \
     flash --build-dir build-20mb --interface openocd --verify --compress
 ```
 
-The default configuration is `board/esp32c5-builtin.cfg`. Override it with `--openocd-config` and the executable with `--openocd`. A normal package is programmed as one merged image. A package crossing 16 MiB is programmed as its generated split files in low-to-high order. `verify` is added only with `--verify`, and `compress` only with `--compress`.
+The default configuration is `board/esp32c5-builtin.cfg`. Override it with `--openocd-config` and the executable with `--openocd`. A normal package is programmed as one merged image. For a package crossing 16 MiB, OpenOCD programs the upper split at `0x1000000` first and the lower 16 MiB split at `0x0` second. `verify` is added only with `--verify`, and `compress` only with `--compress`.
 
 Add `--dry-run` to any flash command to validate all artifacts and print the exact command without prompting or touching hardware.
 

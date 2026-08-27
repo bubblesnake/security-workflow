@@ -894,7 +894,10 @@ def make_openocd_flash_command(args: argparse.Namespace, manifest: dict, secured
     command = [args.openocd, "-f", args.openocd_config]
     split = manifest.get("split", [])
     if split:
-        records = sorted(split, key=lambda item: int(item["offset"]))
+        # Program split images from the highest address down. On large flashes,
+        # programming the lower image first can reset or otherwise disturb the
+        # target before the upper (>16 MiB) range has been written.
+        records = sorted(split, key=lambda item: int(item["offset"]), reverse=True)
     else:
         merged = manifest.get("merged")
         if not isinstance(merged, dict):

@@ -223,7 +223,7 @@ class SecureFirmwareTests(unittest.TestCase):
                     self.assertEqual(" compress" in program, compress)
                     self.assertTrue(program.endswith("reset exit"))
 
-    def test_openocd_split_order(self) -> None:
+    def test_openocd_split_order_is_upper_then_lower(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             secured = Path(temporary)
             high = write_file(secured / "part2.bin", b"2")
@@ -241,10 +241,12 @@ class SecureFirmwareTests(unittest.TestCase):
                 compress=False,
             )
             command = sf.make_openocd_flash_command(args, manifest, secured)
-            self.assertIn("part1.bin", command[4])
+            self.assertIn("part2.bin", command[4])
+            self.assertIn("0x1000000", command[4])
             self.assertNotIn("reset", command[4])
-            self.assertIn("part2.bin", command[6])
-            self.assertIn("0x1000000", command[6])
+            self.assertIn("part1.bin", command[6])
+            self.assertIn("0x0", command[6])
+            self.assertIn("reset exit", command[6])
 
     def test_esptool_requires_port_and_orders_parts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
